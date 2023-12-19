@@ -113,36 +113,12 @@ resource "aws_security_group" "sg" {
 
 # #EC2
  resource "aws_instance" "EC2" {
-    ami = "ami-003ed94f11f7ecc7e"
-    instance_type = "t2.micro"
-    key_name = "connect"
-    #subnet_id = aws_subnet.public[0].id
+    ami = "ami-018ba43095ff50d08"
+    instance_type = "t2.small"
+    key_name = "provisioner"
     subnet_id = local.public_subnet_ids[0]
     security_groups = ["${aws_security_group.sg.id}"]
-    # user_data = "${file("../Docker-infra/scripts/docker.sh")}"
-    user_data = <<EOF
-#!/bin/bash
-
-### Docker installation
-
-#Update OS packages
-sudo yum update -y
-
-#Install Docker
-sudo amazon-linux-extras install docker
-
-#Start Docker
-sudo service docker start
-
-#Enable it
-sudo systemctl enable docker
-
-#Add user to docker group
-sudo usermod -a -G docker ec2-user
-
-#Just logout and login again to run docker commands with normal user.
-	
-EOF
+    user_data = file("scripts/docker.sh")
     tags = merge(var.common_tags,{
                 Name = "Docker-workstation"
             })
