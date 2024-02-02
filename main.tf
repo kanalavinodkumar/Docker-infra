@@ -119,7 +119,8 @@ resource "aws_security_group" "sg" {
     subnet_id = local.public_subnet_ids[0]
     security_groups = ["${aws_security_group.sg.id}"]
     #user_data = file("K:/Devops/Practice/Docker-infra/scripts/docker.sh")
-    user_data = file("/scripts/docker.sh")
+    user_data = file("${scripts}/docker.sh")
+    
     tags = merge(var.common_tags,{
                 Name = "Docker-workstation"
             })
